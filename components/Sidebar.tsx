@@ -17,7 +17,6 @@ import { Ionicons } from '@expo/vector-icons';
 import type { IconProps } from '@expo/vector-icons/build/createIconSet';
 import theme from '../constants/theme';
 import { useTheme } from '../contexts/ThemeContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { colors, spacing, borderRadius, shadows, typography, layout } = theme;
 
@@ -180,135 +179,120 @@ export default function Sidebar() {
     );
   };
 
-  const SidebarContent = () => {
-    const colorScheme = useColorScheme();
-    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-    const activeColors = colorScheme === 'dark' ? colors.dark : colors.light;
+  const SidebarContent = () => (
+    <Animated.View style={[
+      styles.sidebar,
+      { width: isMobile ? SIDEBAR_EXPANDED_WIDTH : widthAnim }
+    ]}>
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <View style={styles.logo}>
+            <Ionicons name="moon" size={26} color="#4B6BFB" />
+          </View>
+          {isExpanded && (
+            <Text style={styles.logoText}>Dashboard</Text>
+          )}
+        </View>
 
-    return (
-      <Animated.View style={[styles.sidebar, { backgroundColor: activeColors.background }]}>
-        <SafeAreaView style={{ flex: 1 }}>
-          {/* Logo */}
-          <View style={styles.logoContainer}>
-            <View style={styles.logo}>
-              <Ionicons name="moon" size={26} color="#4B6BFB" />
-            </View>
+        {/* Menu Items */}
+        <View style={styles.menuContainer}>
+          {menuItems.map((item, index) => (
+            <Pressable
+              key={index}
+              onPress={() => setActiveItem(index)}
+              onHoverIn={() => setHoveredItem(index)}
+              onHoverOut={() => setHoveredItem(null)}
+              style={({pressed}) => [
+                styles.menuItem,
+                pressed && styles.menuItemPressed,
+                hoveredItem === index && styles.menuItemHovered,
+                activeItem === index && styles.menuItemActive,
+                !isExpanded && styles.menuItemCompact
+              ]}
+            >
+              <View style={[
+                styles.menuIconContainer,
+                (activeItem === index || hoveredItem === index) && styles.menuIconActive
+              ]}>
+                <Ionicons 
+                  name={activeItem === index ? (item.activeIcon || item.icon) : item.icon}
+                  size={22} 
+                  color={(activeItem === index || hoveredItem === index) ? "#4B6BFB" : "#64748B"}
+                />
+                {item.badge && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>{item.badge}</Text>
+                  </View>
+                )}
+              </View>
+              {isExpanded && (
+                <Animated.Text style={[
+                  styles.menuText,
+                  (activeItem === index || hoveredItem === index) && styles.menuTextActive
+                ]}>{item.label}</Animated.Text>
+              )}
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Profile Section with Theme Switch */}
+        <View style={styles.profileSection}>
+          <View style={[styles.themeContainer, !isExpanded && styles.compactThemeToggle]}>
+            <ThemeSwitch />
             {isExpanded && (
-              <Text style={styles.logoText}>Dashboard</Text>
+              <Text style={styles.themeText}>
+                {isDark ? 'Dark Mode' : 'Light Mode'}
+              </Text>
             )}
           </View>
-
-          {/* Menu Items */}
-          <View style={styles.menuContainer}>
-            {menuItems.map((item, index) => (
-              <Pressable
-                key={index}
-                onPress={() => setActiveItem(index)}
-                onHoverIn={() => setHoveredItem(index.toString())}
-                onHoverOut={() => setHoveredItem(null)}
-                style={({pressed}) => [
-                  styles.menuItem,
-                  pressed && styles.menuItemPressed,
-                  hoveredItem === index.toString() && styles.menuItemHovered,
-                  activeItem === index && styles.menuItemActive,
-                  !isExpanded && styles.menuItemCompact
-                ]}
-              >
-                <View style={[
-                  styles.menuIconContainer,
-                  (activeItem === index || hoveredItem === index.toString()) && styles.menuIconActive
-                ]}>
-                  <Ionicons 
-                    name={activeItem === index ? (item.activeIcon || item.icon) : item.icon}
-                    size={22} 
-                    color={(activeItem === index || hoveredItem === index.toString()) ? "#4B6BFB" : "#64748B"}
-                  />
-                  {item.badge && (
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{item.badge}</Text>
-                    </View>
-                  )}
-                </View>
-                {isExpanded && (
-                  <Animated.Text style={[
-                    styles.menuText,
-                    (activeItem === index || hoveredItem === index.toString()) && styles.menuTextActive
-                  ]}>{item.label}</Animated.Text>
-                )}
-              </Pressable>
-            ))}
-          </View>
-
-          {/* Profile Section with Theme Switch */}
-          <View style={styles.profileSection}>
-            <View style={styles.themeContainer}>
-              <ThemeSwitch />
-              {isExpanded && (
-                <Text style={styles.themeText}>
-                  {colorScheme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-                </Text>
-              )}
-            </View>
-            <View style={[
+          <Pressable 
+            style={[
               styles.profileContainer,
-              isExpanded ? styles.profileExpandedContainer : styles.profileCompactContainer
-            ]}>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.profileImageContainer,
-                  pressed && styles.profilePressed
-                ]}
-              >
-                <Image
-                  source={{ uri: PROFILE_IMAGE_URL }}
-                  style={styles.profileImage}
-                />
-              </Pressable>
-
-              <Pressable
-                style={[
-                  styles.themeToggleButton,
-                  { backgroundColor: activeColors.gray[100] }
-                ]}
-                onPress={() => {
-                  // Toggle theme logic here
-                }}
-              >
-                <MaterialCommunityIcons
-                  name={colorScheme === 'dark' ? 'weather-sunny' : 'weather-night'}
-                  size={20}
-                  color={activeColors.text}
-                />
-              </Pressable>
+              !isExpanded && styles.compactProfileContainer
+            ]}
+          >
+            <View style={styles.profileImageContainer}>
+              <Image 
+                source={{ uri: PROFILE_IMAGE_URL }} 
+                style={styles.profileImage}
+              />
+              <View style={styles.profileStatus} />
             </View>
-            
             {isExpanded && (
-              <View style={styles.storageContainer}>
-                <View style={styles.storageHeader}>
-                  <View style={styles.storageIcon}>
-                    <Ionicons name="cloud-outline" size={18} color="#4B6BFB" />
-                  </View>
-                  <Text style={styles.storageText}>Storage</Text>
-                  <Pressable 
-                    style={({pressed}) => [
-                      styles.upgradeButton,
-                      pressed && styles.upgradeButtonPressed
-                    ]}
-                  >
-                    <Text style={styles.upgradeText}>Upgrade</Text>
-                  </Pressable>
-                </View>
-                <View style={styles.progressBarContainer}>
-                  <View style={styles.progressBar} />
-                </View>
-                <Text style={styles.storageInfo}>18.2 GB of 20 GB used</Text>
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>Paulo Morales</Text>
+                <Text style={styles.profileRole}>Admin</Text>
               </View>
             )}
-          </View>
-        </SafeAreaView>
-      </Animated.View>
-    );
-  };
+          </Pressable>
+          
+          {isExpanded && (
+            <View style={styles.storageContainer}>
+              <View style={styles.storageHeader}>
+                <View style={styles.storageIcon}>
+                  <Ionicons name="cloud-outline" size={18} color="#4B6BFB" />
+                </View>
+                <Text style={styles.storageText}>Storage</Text>
+                <Pressable 
+                  style={({pressed}) => [
+                    styles.upgradeButton,
+                    pressed && styles.upgradeButtonPressed
+                  ]}
+                >
+                  <Text style={styles.upgradeText}>Upgrade</Text>
+                </Pressable>
+              </View>
+              <View style={styles.progressBarContainer}>
+                <View style={styles.progressBar} />
+              </View>
+              <Text style={styles.storageInfo}>18.2 GB of 20 GB used</Text>
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
+    </Animated.View>
+  );
 
   const styles = useMemo(() => StyleSheet.create({
     sidebar: {
@@ -422,65 +406,46 @@ export default function Sidebar() {
       borderTopColor: activeColors.divider,
     } as ViewStyle,
     profileContainer: {
-      padding: 16,
-      width: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-    } as ViewStyle,
-    profileExpandedContainer: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: 16,
-    } as ViewStyle,
-    profileCompactContainer: {
-      flexDirection: 'column',
       alignItems: 'center',
-      gap: 16,
+      padding: spacing.sm,
+      borderRadius: borderRadius.lg,
     } as ViewStyle,
     profilePressed: {
       backgroundColor: activeColors.gray[50],
     } as ViewStyle,
     profileImageContainer: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      overflow: 'hidden',
-      alignSelf: 'center',
+      position: 'relative',
     } as ViewStyle,
     profileImage: {
-      width: '100%',
-      height: '100%',
-    } as ViewStyle,
-    themeContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: spacing.lg,
-      paddingHorizontal: spacing.sm,
-    } as ViewStyle,
-    themeSwitch: {
-      width: 44,
-      height: 24,
-      borderRadius: 12,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
       backgroundColor: activeColors.gray[200],
-      padding: 2,
     } as ViewStyle,
-    themeSwitchDark: {
-      backgroundColor: activeColors.gray[700],
+    profileStatus: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: activeColors.success,
+      borderWidth: 2,
+      borderColor: activeColors.surface,
     } as ViewStyle,
-    themeSwitchKnob: {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      backgroundColor: activeColors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...activeShadows.sm,
-    } as ViewStyle,
-    themeText: {
+    profileInfo: {
       marginLeft: spacing.md,
+    } as ViewStyle,
+    profileName: {
+      fontSize: typography.sizes.md,
+      fontWeight: String(typography.weights.semibold),
+      color: activeColors.text,
+      letterSpacing: typography.letterSpacing.tight,
+    } as TextStyle,
+    profileRole: {
       fontSize: typography.sizes.sm,
       color: activeColors.textSecondary,
-      fontWeight: String(typography.weights.medium),
     } as TextStyle,
     storageContainer: {
       marginTop: spacing.lg,
@@ -546,12 +511,94 @@ export default function Sidebar() {
       color: activeColors.textSecondary,
       letterSpacing: typography.letterSpacing.tight,
     } as TextStyle,
-    themeToggleButton: {
-      padding: 8,
-      borderRadius: 8,
+    mobileHeader: {
+      position: 'absolute',
+      top: Platform.OS === 'ios' ? spacing['3xl'] + spacing.xl : spacing.xl,
+      left: spacing.xl,
+      right: spacing.xl,
+      zIndex: 100,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
+    } as ViewStyle,
+    mobileLogoGroup: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    } as ViewStyle,
+    hamburger: {
+      width: 40,
+      height: 40,
+      backgroundColor: activeColors.surface,
+      borderRadius: borderRadius.lg,
       justifyContent: 'center',
-    },
+      alignItems: 'center',
+      ...activeShadows.md,
+    } as ViewStyle,
+    hamburgerPressed: {
+      backgroundColor: activeColors.gray[50],
+    } as ViewStyle,
+    modalOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: activeColors.background + '4D',
+      zIndex: 1000,
+    } as ViewStyle,
+    modalOverlayContent: {
+      flex: 1,
+    } as ViewStyle,
+    modalContent: {
+      width: SIDEBAR_EXPANDED_WIDTH,
+      height: '100%',
+      backgroundColor: activeColors.surface,
+    } as ViewStyle,
+    themeContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.lg,
+      paddingHorizontal: spacing.sm,
+    } as ViewStyle,
+    themeSwitch: {
+      width: 44,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: activeColors.gray[200],
+      padding: 2,
+    } as ViewStyle,
+    themeSwitchDark: {
+      backgroundColor: activeColors.gray[700],
+    } as ViewStyle,
+    themeSwitchKnob: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: activeColors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...activeShadows.sm,
+    } as ViewStyle,
+    themeText: {
+      marginLeft: spacing.md,
+      fontSize: typography.sizes.sm,
+      color: activeColors.textSecondary,
+      fontWeight: String(typography.weights.medium),
+    } as TextStyle,
+    compactThemeToggle: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.lg,
+      paddingHorizontal: spacing.sm,
+      transform: [{ translateX: -10 }],
+    } as ViewStyle,
+    compactProfileContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing.sm,
+      borderRadius: borderRadius.lg,
+      transform: [{ translateX: -7 }],
+    } as ViewStyle,
   }), [isDark, activeColors, activeShadows]);
 
   if (isMobile) {
