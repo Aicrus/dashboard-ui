@@ -21,7 +21,7 @@ Um dashboard moderno e responsivo construído com React Native (Expo) e TypeScri
 
 1. Clone o repositório
 ```bash
-git clone [URL_DO_REPOSITORIO]
+git clone https://github.com/Aicrus/dashboard-ui.git
 ```
 
 2. Instale as dependências
