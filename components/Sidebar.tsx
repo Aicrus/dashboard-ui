@@ -17,6 +17,18 @@ import { Ionicons } from '@expo/vector-icons';
 import type { IconProps } from '@expo/vector-icons/build/createIconSet';
 import theme from '../constants/theme';
 import { useTheme } from '../contexts/ThemeContext';
+import { 
+  LayoutGrid,
+  BarChart3,
+  Wallet,
+  SendHorizontal,
+  Users,
+  FolderKanban,
+  Settings,
+  Moon,
+  Sun,
+  Menu
+} from 'lucide-react-native';
 
 const { colors, spacing, borderRadius, shadows, typography, layout } = theme;
 
@@ -109,46 +121,39 @@ export default function Sidebar() {
     });
   };
 
-  const menuItems: MenuItem[] = [
+  const menuItems = [
     { 
-      icon: 'home-outline',
-      activeIcon: 'home-sharp',
+      icon: LayoutGrid,
       label: 'Home',
       badge: null 
     },
     { 
-      icon: 'stats-chart-outline',
-      activeIcon: 'stats-chart',
+      icon: BarChart3,
       label: 'Analytics',
       badge: null 
     },
     { 
-      icon: 'card-outline',
-      activeIcon: 'card',
+      icon: Wallet,
       label: 'Cards',
       badge: null 
     },
     { 
-      icon: 'paper-plane-outline',
-      activeIcon: 'paper-plane',
+      icon: SendHorizontal,
       label: 'Send',
       badge: null 
     },
     { 
-      icon: 'people-outline',
-      activeIcon: 'people',
+      icon: Users,
       label: 'Users',
       badge: null 
     },
     { 
-      icon: 'folder-outline',
-      activeIcon: 'folder',
+      icon: FolderKanban,
       label: 'Files',
       badge: 2 
     },
     { 
-      icon: 'settings-outline',
-      activeIcon: 'settings-sharp',
+      icon: Settings,
       label: 'Settings',
       badge: null 
     }
@@ -169,11 +174,11 @@ export default function Sidebar() {
             transform: [{ translateX: isDark ? 20 : 0 }]
           }
         ]}>
-          <Ionicons 
-            name={isDark ? 'moon' : 'sunny'} 
-            size={14} 
-            color={isDark ? activeColors.text : '#FDB813'} 
-          />
+          {isDark ? (
+            <Moon size={14} color={activeColors.text} strokeWidth={2} />
+          ) : (
+            <Sun size={14} color="#FDB813" strokeWidth={2} />
+          )}
         </Animated.View>
       </Pressable>
     );
@@ -215,10 +220,10 @@ export default function Sidebar() {
                 styles.menuIconContainer,
                 (activeItem === index || hoveredItem === index) && styles.menuIconActive
               ]}>
-                <Ionicons 
-                  name={activeItem === index ? (item.activeIcon || item.icon) : item.icon}
+                <item.icon 
                   size={22} 
                   color={(activeItem === index || hoveredItem === index) ? "#4B6BFB" : "#64748B"}
+                  strokeWidth={(activeItem === index || hoveredItem === index) ? 2.5 : 1.5}
                 />
                 {item.badge && (
                   <View style={styles.badge}>
@@ -322,10 +327,10 @@ export default function Sidebar() {
     } as ViewStyle,
     logoText: {
       marginLeft: spacing.md,
-      fontSize: typography.sizes['2xl'],
-      fontWeight: String(typography.weights.semibold),
+      fontSize: typography.sizes.xl,
+      fontWeight: String(typography.weights.medium),
       color: activeColors.text,
-      letterSpacing: typography.letterSpacing.tighter,
+      letterSpacing: 0.4,
     } as TextStyle,
     menuContainer: {
       flex: 1,
@@ -335,12 +340,13 @@ export default function Sidebar() {
     menuItem: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 44,
+      height: 42,
       paddingHorizontal: spacing.md,
       borderRadius: borderRadius.lg,
       marginBottom: spacing.xs / 2,
       position: 'relative',
       overflow: 'hidden',
+      transition: 'all 0.2s ease',
     } as ViewStyle,
     menuItemPressed: {
       backgroundColor: activeColors.gray[50],
@@ -359,27 +365,26 @@ export default function Sidebar() {
       borderRadius: borderRadius.lg,
     } as ViewStyle,
     menuIconContainer: {
-      width: 36,
-      height: 36,
+      width: 34,
+      height: 34,
       justifyContent: 'center',
       alignItems: 'center',
       position: 'relative',
       borderRadius: borderRadius.md,
     } as ViewStyle,
     menuIconActive: {
-      backgroundColor: activeColors.primaryLight,
-      transform: [{ scale: 1.05 }],
+      transform: [{ scale: 1.02 }],
     } as ViewStyle,
     menuText: {
       marginLeft: spacing.md,
       fontSize: typography.sizes.lg,
-      fontWeight: String(typography.weights.medium),
+      fontWeight: String(typography.weights.normal),
       color: activeColors.textSecondary,
-      letterSpacing: typography.letterSpacing.tight,
+      letterSpacing: 0.2,
     } as TextStyle,
     menuTextActive: {
       color: activeColors.primary,
-      fontWeight: String(typography.weights.semibold),
+      fontWeight: String(typography.weights.medium),
       transform: [{ translateX: 2 }],
     } as TextStyle,
     badge: {
@@ -387,12 +392,12 @@ export default function Sidebar() {
       top: -2,
       right: -2,
       backgroundColor: activeColors.primary,
-      borderRadius: borderRadius.md,
-      minWidth: 18,
-      height: 18,
+      borderRadius: borderRadius.full,
+      minWidth: 16,
+      height: 16,
       justifyContent: 'center',
       alignItems: 'center',
-      borderWidth: 2,
+      borderWidth: 1.5,
       borderColor: activeColors.surface,
     } as ViewStyle,
     badgeText: {
@@ -619,7 +624,7 @@ export default function Sidebar() {
             ]}
             onPress={showSidebar}
           >
-            <Ionicons name="menu" size={26} color={activeColors.textSecondary} />
+            <Menu size={26} color={activeColors.textSecondary} strokeWidth={1.5} />
           </Pressable>
         </View>
         
