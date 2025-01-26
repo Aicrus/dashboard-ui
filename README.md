@@ -1,3 +1,53 @@
+# Dashboard UI
+
+Um dashboard moderno e responsivo construído com React Native (Expo) e TypeScript.
+
+## Características
+
+- 🌓 Tema claro/escuro
+- 📱 Design responsivo (Desktop/Mobile)
+- 🎨 UI moderna e elegante
+- ⚡ Animações suaves
+- 🔧 Construído com TypeScript
+
+## Tecnologias
+
+- React Native (Expo)
+- TypeScript
+- Expo Router
+- React Native Web
+
+## Como executar
+
+1. Clone o repositório
+```bash
+git clone [URL_DO_REPOSITORIO]
+```
+
+2. Instale as dependências
+```bash
+npm install
+```
+
+3. Execute o projeto
+```bash
+npm start
+```
+
+## Estrutura do Projeto
+
+```
+my-app/
+├── app/                # Rotas do Expo Router
+├── components/         # Componentes React
+├── constants/         # Constantes e tema
+└── contexts/          # Contextos React
+```
+
+## Deploy
+
+O projeto está disponível online através da Vercel em: [URL_DO_PROJETO]
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
