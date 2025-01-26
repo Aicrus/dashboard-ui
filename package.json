@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "npx expo export -p web",
-    "vercel-build": "npx expo export -p web",
+    "vercel-build": "npx expo export:web",
     "preview": "npx expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
