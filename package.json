@@ -8,8 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "npx expo export --platform web",
-    "vercel-build": "npx expo export --platform web",
+    "build": "npx expo export:web",
+    "vercel-build": "npx expo export:web",
     "preview": "npx expo start --web",
     "serve": "npx serve dist",
     "test": "jest --watchAll",
@@ -39,6 +39,8 @@
     "expo-symbols": "~0.2.1",
     "expo-system-ui": "~4.0.7",
     "expo-web-browser": "~14.0.2",
+    "metro": "0.76.8",
+    "metro-resolver": "0.76.8",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.6",
@@ -61,9 +63,5 @@
     "typescript": "^5.3.3",
     "serve": "^14.2.1"
   },
-  "private": true,
-  "overrides": {
-    "metro": "0.76.8",
-    "metro-resolver": "0.76.8"
-  }
+  "private": true
 }
