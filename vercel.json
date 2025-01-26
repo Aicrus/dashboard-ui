@@ -1,12 +1,13 @@
 {
-  "buildCommand": "expo export -p web",
+  "framework": "expo",
+  "buildCommand": "npx expo export -p web",
   "outputDirectory": "dist",
   "devCommand": "expo start --web",
   "cleanUrls": true,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 } 
